@@ -1,0 +1,6 @@
+do-token
+.terraform*
+terraform.tfvars
+terraform.tfstate*
+temp.tfvars
+.vscode

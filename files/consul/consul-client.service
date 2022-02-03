@@ -1,0 +1,12 @@
+[Unit]
+Description=Consul client
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart= /bin/sh -c "/usr/bin/consul agent -config-dir /etc/consul.d/client"
+Restart=always
+RestartSec=10000
+
+[Install]
+WantedBy=multi-user.target

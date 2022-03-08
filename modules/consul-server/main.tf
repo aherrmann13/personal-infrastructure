@@ -64,10 +64,8 @@ resource "digitalocean_droplet" "consul-server" {
 
     provisioner "remote-exec" {
       inline = [
-        "chmod +x /tmp/other-software.sh",
-        "/tmp/other-software.sh server",
-        "chmod +x /tmp/install_consul.sh",
-        "/tmp/install_consul.sh server",
+        "chmod +x /tmp/other-software.sh && /tmp/other-software.sh",
+        "chmod +x /tmp/install_consul.sh && /tmp/install_consul.sh server",
       ]
     }
 
@@ -77,4 +75,11 @@ resource "digitalocean_droplet" "consul-server" {
         "consul join ${digitalocean_droplet.consul-server.0.ipv4_address_private}",
       ]
     }
+}
+
+
+output "consul_server_ips" {
+  value       = [for server in digitalocean_droplet.consul-server : server.ipv4_address_private]
+  description = "list of the consul server private ip addresses"
+  sensitive   = true
 }

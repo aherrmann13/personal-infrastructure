@@ -2,7 +2,7 @@
 
 ## unseal in vault HA needs to be done once per cluster
 if [ $1 == "0" ]; then
-	sleep 1m
+	sleep 5s
 	# init vault, unseal vault and export root token
 	VAULT_PROTOCOL="http"
 	VAULT_IP=`ifconfig eth1 | grep 'inet ' | cut -d' ' -f10`

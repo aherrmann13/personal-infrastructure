@@ -4,7 +4,6 @@ service_registration "consul" {
 
 storage "raft" {
   path    = "/vault/data/"
-  node_id = "replaceme-nodeid"
 }
 
 listener "tcp" {

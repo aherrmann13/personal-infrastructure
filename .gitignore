@@ -3,4 +3,5 @@ do-token
 terraform.tfvars
 terraform.tfstate*
 temp.tfvars
+temp.pkrvars.hcl
 .vscode

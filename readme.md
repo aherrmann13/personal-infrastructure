@@ -50,6 +50,12 @@ https://www.reddit.com/r/devops/comments/d6vedw/problem_with_hashicorp_vault_hig
 1. figure out HA backend
 1. get it working
 1. tls on each host
+1. the initial vault install unseals the leader node and leaves the unsealing of the remaining nodes up to someone to do manually (or copy files)
+  * the tl;dr is no matter what the setup is someone needs to copy a root key from one server to another if its totally automated
+  * this is fine for now
+
+
+
 
 
 

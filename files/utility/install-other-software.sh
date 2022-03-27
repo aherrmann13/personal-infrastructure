@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#! /bin/bash
-
 sleep 15s
 
 sudo apt-get update

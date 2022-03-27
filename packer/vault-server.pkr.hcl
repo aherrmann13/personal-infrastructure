@@ -9,6 +9,7 @@ packer {
 
 variable "do_token" {}
 
+variable "ca" {}
 
 source "digitalocean" "vault-server" {
   api_token    = "${var.do_token}"
@@ -25,7 +26,8 @@ build {
 
   provisioner "shell" {
     inline = [
-      "mkdir -p /scripts/"
+      "mkdir -p /scripts/",
+      "mkdir -p /certs/"
     ]
   }
 
@@ -49,6 +51,17 @@ build {
     destination = "/scripts/unseal-vault.sh"
   }
 
+  provisioner "file" {
+    source = "../files/vault/tls.conf"
+    destination = "/certs/tls.conf"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "echo '${var.ca}' > /usr/local/share/ca-certificates/private_ca.crt",
+    ]
+  }
+
   provisioner "shell" {
     inline = [
       "chmod +x /scripts/install-consul.sh && /scripts/install-consul.sh",
@@ -67,7 +80,7 @@ build {
 
   provisioner "file" {
     source = "../files/consul/encrypt.hcl"
-    destination = "/etc/consul.d/client/config.hcl"
+    destination = "/etc/consul.d/client/encrypt-config.hcl"
   }
 
   provisioner "file" {
@@ -80,13 +93,14 @@ build {
     destination = "/etc/systemd/system/consul-client.service"
   }
 
-    provisioner "file" {
+  provisioner "file" {
     source      = "../files/vault/vault-server.service"
     destination = "/etc/systemd/system/vault-server.service"
   }
 
   provisioner "shell" {
     inline = [
+      "update-ca-certificates",
       "systemctl enable consul-client.service",
       "systemctl enable vault-server.service"
     ]

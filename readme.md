@@ -39,13 +39,34 @@ from the main node
 [source](https://www.vaultproject.io/docs/concepts/seal)
 
 ## next steps
-- clean up readme doc
 - secure agent -> server communication with TLS
-- better deployment model
+  - vault - https://github.com/Boostport/kubernetes-vault/issues/63
+  - https://learn.hashicorp.com/tutorials/vault/pki-engine-external-ca?in=vault/secrets-management
+  - consul connect - use vault as PKI? chicken and egg-y
+  - vault then consul then join vault to consul
+  - https://learn.hashicorp.com/tutorials/consul/vault-pki-consul-connect-ca?in=vault/secrets-management
+- vault as pki
+- vault refresh certs
 - nomad
 - private ip addressess
 - consul encrypt key deployed through consul template
 - how to use the hashicorp acl system for permissions
 - `prevent_destroy` needs to be enabled on the nodes
 - correct user accounts and access on nodes and not just 'root'
-- what does a zero downtime image upgrade look like
+- what does a zero downtime image upgrade look like (and how to deploy without my laptop)
+- how to secure access to the consul and vault UIs while making them accessable by me
+- `digitalocean.consul-server: debconf: unable to initialize frontend: Dialog`
+- state should be stored in DO spaces
+- pin specific versions of vault/consul/nomad in packer
+- how to give things hostnames
+- harden vault for production
+
+
+
+https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
+
+https://gist.github.com/Soarez/9688998
+
+add ca here https://support.kerioconnect.gfi.com/hc/en-us/articles/360015200119-Adding-Trusted-Root-Certificates-to-the-Server
+
+https://cyberark-customers.force.com/s/article/How-to-update-the-Vault-server-certificate-when-the-current-certificate-is-about-to-expire

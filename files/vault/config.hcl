@@ -9,7 +9,8 @@ storage "raft" {
 listener "tcp" {
   address = "{{ GetInterfaceIP \"eth1\" }}:8200"
   cluster_address = "{{ GetInterfaceIP \"eth1\" }}:8201"
-  tls_disable = true
+  tls_cert_file = "/certs/tls.crt"
+  tls_key_file  = "/certs/tls.key"
 }
 
 disable_mlock = true

@@ -39,12 +39,9 @@ from the main node
 [source](https://www.vaultproject.io/docs/concepts/seal)
 
 ## next steps
-- secure agent -> server communication with TLS
-  - vault - https://github.com/Boostport/kubernetes-vault/issues/63
-  - https://learn.hashicorp.com/tutorials/vault/pki-engine-external-ca?in=vault/secrets-management
-  - consul connect - use vault as PKI? chicken and egg-y
-  - vault then consul then join vault to consul
-  - https://learn.hashicorp.com/tutorials/consul/vault-pki-consul-connect-ca?in=vault/secrets-management
+- clean up and merge encryption branch
+- use ansible for all provisioners
+- vault refresh tls certs after bootstrap
 - vault as pki
 - vault refresh certs
 - nomad

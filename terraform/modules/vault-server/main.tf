@@ -64,19 +64,6 @@ resource "digitalocean_droplet" "vault-server" {
       private_key  = file("~/.ssh/id_rsa")
     }
 
-
-    # provisioner "remote-exec" {
-    #   inline = [
-    #     "consul join ${var.consul_server_ip}"
-    #   ]
-    # }
-
-    # provisioner "remote-exec" {
-    #   inline = [
-    #     "chmod +x /scripts/unseal-vault.sh && /scripts/unseal-vault.sh ${count.index}",
-    #     "vault operator raft join http://${digitalocean_droplet.vault-server.0.ipv4_address_private}:8200",
-    #   ]
-    # }
 }
 
 resource "tls_cert_request" "vault_csr" {
@@ -113,14 +100,30 @@ resource "null_resource" "provision" {
     type         = "ssh"
     user         = "root"
     host         = digitalocean_droplet.vault-server[count.index].ipv4_address
-    agent        = true
+    agent        = false
     private_key  = file("~/.ssh/id_rsa")
   }
 
   provisioner "remote-exec" {
     inline = [
       "echo '${tls_locally_signed_cert.vault_crt.cert_pem}' > /certs/tls.crt",
-      "echo '${var.tls_private_key}' > /certs/tls.key",
+      "echo '${var.tls_private_key}' > /certs/tls.key"
     ]
   }
+
+  provisioner "remote-exec" {
+     inline = [
+       "consul join ${var.consul_server_ip}"
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo ${null_resource.provision.0.id}",
+      "sleep 10s",
+      "chmod +x /scripts/unseal-vault.sh && /scripts/unseal-vault.sh ${count.index}",
+      "export VAULT_ADDR='https://${digitalocean_droplet.vault-server[count.index].ipv4_address_private}:8200'",
+      "vault operator raft join https://${digitalocean_droplet.vault-server.0.ipv4_address_private}:8200",
+    ]
+  } 
 }

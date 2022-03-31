@@ -3,9 +3,6 @@ terraform {
     digitalocean = {
       source = "digitalocean/digitalocean"
     }
-    tls = {
-      source = "hashicorp/tls"
-    }
   }
 }
 
@@ -24,10 +21,16 @@ module "vault-server" {
   source = "./modules/vault-server"
   ssh_fingerprints = ["${var.lt_ssh_fingerprint}", "${var.tab_ssh_fingerprint}"]
   server_count = 3
-  image_id = "${var.vault_server_imageid}"
-  consul_server_ip = module.consul-server.consul_server_ips.0
-  tls_private_key = file("./temp.vault.key")
-  tls_ca_cert = file("~/ca/ca.crt")
-  tls_ca_private_key = file("~/ca/ca.key")
-  
+  image_id = "${var.vault_server_imageid}"  
+}
+
+
+resource "local_file" "hosts_cfg" {
+  content = templatefile("${path.module}/templates/ansible.tpl",
+    {
+      consul_servers = module.consul-server.consul_server_public_ips,
+      vault_servers  = module.vault-server.vault_server_public_ips
+    }
+  )
+  filename = "./inventory.cfg"
 }

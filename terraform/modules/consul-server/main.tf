@@ -32,26 +32,14 @@ resource "digitalocean_droplet" "consul-server" {
     region      = "nyc1"
     size        = "s-1vcpu-1gb"
     ssh_keys    = var.ssh_fingerprints
-
-    connection {
-      type         = "ssh"
-      user         = "root"
-      host         = "${self.ipv4_address}"
-      agent        = false
-      private_key  = file("~/.ssh/id_rsa")
-    }
-
-    # Join Consul Servers
-    provisioner "remote-exec" {
-      inline = [
-        "consul join ${digitalocean_droplet.consul-server.0.ipv4_address_private}",
-      ]
-    }
 }
 
-
-output "consul_server_ips" {
+output "consul_server_private_ips" {
   value       = [for server in digitalocean_droplet.consul-server : server.ipv4_address_private]
   description = "list of the consul server private ip addresses"
-  sensitive   = true
+}
+
+output "consul_server_public_ips" {
+  value       = [for server in digitalocean_droplet.consul-server : server.ipv4_address]
+  description = "list of the consul server public ip addresses"
 }

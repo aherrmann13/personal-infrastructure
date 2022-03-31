@@ -10,18 +10,17 @@ consul is set to bootstrap with three nodes - node 2 and 3 will join node 1 and 
 
 this setting will stay the same reguardless of how many nodes we need - 3 will elect a leader and the rest can join
 
-### future improvements
+### encryption
 
-1. need to remove public ip address and use private only
-   * will we need a bastion host?
-   * we may need a packer image.  this has the advantage of allowing me to manually add nodes without additional config
-   * cloud init may also solve the need to configure from ssh
-1. need to learn the consul acl system to bootstrap tokens and provide some sort of security
-1. need to set up consul-template
-   * need to have an encypt key for consul from vault
-1. `prevent_destroy` needs to be enabled on the nodes
-1. correct user accounts and access on nodes and not just 'root'
+server to server gossip encryption is done via the encrypt key, server to agent is done via tcp (and therefore can be 
+done w/ consul connect)
 
+im stll a little unclear how the vault startup will work - becuase the backend is internal it doesn't need consul to
+get up and running but we want to register it in consul so im not sure how the flow looks for initialization + setting
+as pki + registering as consul client (so other services can use it) looks like
+
+
+[source](https://www.consul.io/docs/security/encryption)
 
 ## vault
 
@@ -33,32 +32,37 @@ vault is set up the same way as consul
 the server starts in a sealed state and needs the unseal keys to start working
 
 the master key is generated and dissasembled into a number of key shares - a subset of which can reassemble the master
-key.  my first interation of this i will write the keys to a plaintext file on each node.  after they are on the node
-i can pull them off manually and store them safely.
+key.  my first interation of this i will write the keys to a plaintext file on a single node.  I will join the other
+nodes to this node and then unseal those manually.  the plaintext file will need to be backed up somewhere and removed
+from the main node
 
 [source](https://www.vaultproject.io/docs/concepts/seal)
 
-ramblings to format correctly
+## next steps
+- use ansible for all provisioners
+- vault refresh tls certs after bootstrap
+- vault as pki
+- vault refresh certs
+- nomad
+- private ip addressess
+- consul encrypt key deployed through consul template
+- how to use the hashicorp acl system for permissions
+- `prevent_destroy` needs to be enabled on the nodes
+- correct user accounts and access on nodes and not just 'root'
+- what does a zero downtime image upgrade look like (and how to deploy without my laptop)
+- how to secure access to the consul and vault UIs while making them accessable by me
+- `digitalocean.consul-server: debconf: unable to initialize frontend: Dialog`
+- state should be stored in DO spaces
+- pin specific versions of vault/consul/nomad in packer
+- how to give things hostnames
+- harden vault for production
 
-> When running in HA mode, this happens once per cluster, not per server. During initialization, the encryption keys are generated, unseal keys are created, and the initial root token is created.
-
-https://github.com/hashicorp/vault/issues/10630
-
-https://www.reddit.com/r/devops/comments/d6vedw/problem_with_hashicorp_vault_high_availability/
-
-### future improvements
-1. figure out HA backend
-1. get it working
-1. tls on each host
-1. the initial vault install unseals the leader node and leaves the unsealing of the remaining nodes up to someone to do manually (or copy files)
-  * the tl;dr is no matter what the setup is someone needs to copy a root key from one server to another if its totally automated
-  * this is fine for now
 
 
+https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
 
+https://gist.github.com/Soarez/9688998
 
+add ca here https://support.kerioconnect.gfi.com/hc/en-us/articles/360015200119-Adding-Trusted-Root-Certificates-to-the-Server
 
-
-## general fixes
-
-fix all file names so they dont get renamed on the server
+https://cyberark-customers.force.com/s/article/How-to-update-the-Vault-server-certificate-when-the-current-certificate-is-about-to-expire

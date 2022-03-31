@@ -3,6 +3,9 @@ terraform {
     digitalocean = {
       source = "digitalocean/digitalocean"
     }
+    tls = {
+      source = "hashicorp/tls"
+    }
   }
 }
 
@@ -23,4 +26,8 @@ module "vault-server" {
   server_count = 3
   image_id = "${var.vault_server_imageid}"
   consul_server_ip = module.consul-server.consul_server_ips.0
+  tls_private_key = file("./temp.vault.key")
+  tls_ca_cert = file("~/ca/ca.crt")
+  tls_ca_private_key = file("~/ca/ca.key")
+  
 }

@@ -48,8 +48,13 @@ build {
   }
 
   provisioner "file" {
-    source = "../files/consul/server/config.hcl"
+    source = "../files/consul/server-config.hcl"
     destination = "/etc/consul.d/server/config.hcl"
+  }
+
+  provisioner "file" {
+    source = "../files/consul/encrypt.hcl"
+    destination = "/etc/consul.d/server/encrypt-config.hcl"
   }
 
   provisioner "file" {

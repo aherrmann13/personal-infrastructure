@@ -39,7 +39,6 @@ from the main node
 [source](https://www.vaultproject.io/docs/concepts/seal)
 
 ## next steps
-- clean up and merge encryption branch
 - use ansible for all provisioners
 - vault refresh tls certs after bootstrap
 - vault as pki

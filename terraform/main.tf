@@ -29,7 +29,8 @@ resource "local_file" "hosts_cfg" {
   content = templatefile("${path.module}/templates/ansible.tpl",
     {
       consul_servers = module.consul-server.consul_server_public_ips,
-      vault_servers  = module.vault-server.vault_server_public_ips
+      vault_servers  = module.vault-server.vault_server_public_ips,
+      consul_servers_private = module.consul-server.consul_server_private_ips,
     }
   )
   filename = "./inventory.cfg"

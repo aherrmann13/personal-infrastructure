@@ -1,9 +1,9 @@
 ---
 - name: cluster consul servers
-  hosts: consul
+  hosts: consul_servers
   remote_user: root
   vars:
-    leader_ip: "10.116.0.4"
+    leader_ip: "{{ groups['consul_servers_private'][0] }}"
     ansible_ssh_private_key_file: ~/.ssh/id_rsa
     ansible_python_interpreter: /usr/bin/python3
 
